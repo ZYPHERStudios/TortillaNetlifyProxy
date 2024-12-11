@@ -14,6 +14,7 @@
     "@types/express": "^5.0.0",
     "express": "^4.21.2",
     "http-proxy-middleware": "^3.0.3",
-    "serverless-http": "^3.2.0"
+    "serverless-http": "^3.2.0",
+    "ws": "^8.18.0"
   }
 }
