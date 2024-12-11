@@ -1,17 +1,15 @@
 const express = require('express');
 const { WebSocketServer } = require('ws');
 const http = require('http');
+const serverless = require('serverless-http');
 
-const target = 'http://dns.tortillagames.org'; // Target server
+const target = 'http://dns.tortillagames.org';
 const PORT = process.env.PORT || 3000;
 
-// Create an Express app
 const app = express();
 
-// Create an HTTP server
 const server = http.createServer(app);
 
-// HTTP proxy
 app.use((req, res) => {
   const targetUrl = new URL(req.url, target);
   const options = {
@@ -33,27 +31,22 @@ app.use((req, res) => {
   });
 });
 
-// WebSocket proxy
 const wss = new WebSocketServer({ server });
 wss.on('connection', (ws, req) => {
-  const targetWs = new WebSocket(target.replace(/^http/, 'ws')); // Convert target to WS
+  const targetWs = new WebSocket(target.replace(/^http/, 'ws'));
 
-  // Forward messages from client to target
   ws.on('message', (message) => {
     targetWs.send(message);
   });
 
-  // Forward messages from target to client
   targetWs.on('message', (message) => {
     ws.send(message);
   });
 
-  // Handle client disconnection
   ws.on('close', () => {
     targetWs.close();
   });
 
-  // Handle target disconnection
   targetWs.on('close', () => {
     ws.close();
   });
