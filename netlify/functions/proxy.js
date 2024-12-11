@@ -69,7 +69,4 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-// Start the server
-server.listen(PORT, () => {
-  console.log(`Proxy server running on http://localhost:${PORT}`);
-});
+module.exports.handler = serverless(server);
